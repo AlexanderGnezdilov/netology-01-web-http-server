@@ -1,14 +1,17 @@
 package ru.netology;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.*;
 
 public class Server {
+    public static final String HTTP_ROOT = "./public";
     private boolean running;
-    public static final List<String> validPaths = List.of("/index.html", "/spring.svg", "/spring.png", "/resources.html", "/styles.css", "/app.js", "/links.html", "/forms.html", "/classic.html", "/events.html", "/events.js");
+    public static final Map<Handler, Map<String, Set<String>>> handlers = new HashMap<>(); // <Handler, <Methods, Paths>>
     private final ExecutorService threadPool = Executors.newFixedThreadPool(64);
 
     public void listen(int port) throws IOException {
@@ -17,13 +20,34 @@ public class Server {
             while (running) {
                 Socket cs = sc.accept();
                 System.out.println("Client socket accepted: " + cs.toString());
-                BufferedReader in = new BufferedReader(new InputStreamReader(cs.getInputStream()));
-                BufferedOutputStream out = new BufferedOutputStream(cs.getOutputStream());
-                threadPool.submit(new ProcessClientRequest(in, out));
+                threadPool.submit(new ProcessClientRequest(
+                        new BufferedInputStream(cs.getInputStream()),
+                        new BufferedOutputStream(cs.getOutputStream()))
+                );
             }
         }
         threadPool.shutdown();
     }
+
+    public void addHandler(String method, String path, Handler handler) {
+        addDefaultHandlers(method, List.of(path), handler);
+    }
+
+    // Добавление / обновление ОДНОГО ДЕФОЛТНОГО обработчика на ОДИН метод и МНОЖЕСТВО путей
+    public void addDefaultHandlers(String method, List<String> paths, Handler handler) {
+        Map<String, Set<String>> map = handlers.containsKey(handler)
+                ? handlers.get(handler)
+                : new HashMap<>();
+
+        Set<String> set = map.containsKey(method)
+                ? map.get(method)
+                : new HashSet<>();
+
+        set.addAll(paths);
+        map.put(method, set);
+        handlers.put(handler, map);
+    }
+
 
     public void stop() {
         running = false;

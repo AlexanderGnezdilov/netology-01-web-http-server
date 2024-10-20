@@ -1,5 +1,5 @@
 # netology-01-web-http-server
-Netology-Web-Springn-n-SpringMVC
+Netology-Web-Spring-and-SpringMVC
 
 # Домашнее задание к занятию «1.1. HTTP и современный Web»
 

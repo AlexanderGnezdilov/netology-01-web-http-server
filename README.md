@@ -1,5 +1,5 @@
 # netology-01-web-http-server
-Netology-Web-Springn-n-SpringMVC
+Netology-Web-Spring-and-SpringMVC
 
 # Домашнее задание к занятию «1.1. HTTP и современный Web»
 
@@ -12,7 +12,6 @@ Netology-Web-Springn-n-SpringMVC
 3. Все задачи нужно решать в **одном** репозитории.
 
 ## Как сдавать домашнее задание
-
 1. Создайте на вашем компьютере Maven-проект.
 1. Инициализируйте в нём пустой Git-репозиторий.
 1. Добавьте в него готовый файл [.gitignore](../.gitignore).
